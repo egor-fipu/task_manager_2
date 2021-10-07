@@ -46,7 +46,7 @@ paths:
   /auth/token/:
     post:
       operationId: auth_get_token
-      description: 'Получение токена'
+      description: 'Получение токена. Для авторизации полученный токен необходимо передавать в заголовке каждого запроса, в поле Authorization. Перед токеном должно стоять ключевое слово Bearer и пробел'
       parameters:
         - name: data
           in: body
@@ -104,7 +104,7 @@ paths:
         - tasks
     post:
       operationId: tasks_create
-      description: "Создание задачи"
+      description: "Создание задачи. В поле 'performers' необходимо указывать username пользователей, ответственных за выполнение задачи"
       parameters:
         - name: data
           in: body
