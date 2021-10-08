@@ -15,17 +15,12 @@ class UserViewSet(CreateViewSet):
     queryset = User.objects.all()
     serializer_class = UserSerializer
 
-    @action(
-        detail=False,
-        methods=['post'],
-        url_path='token'
-    )
+    @action(detail=False, methods=['post'], url_path='token')
     def get_token(self, request):
         serializer = UserGetTokenSerializer(data=request.data)
         serializer.is_valid(raise_exception=True)
         user = get_object_or_404(
-            User,
-            username=serializer.validated_data['username']
+            User, username=serializer.validated_data['username']
         )
         if user.check_password(serializer.validated_data['password']):
             refresh = RefreshToken.for_user(user)
@@ -34,9 +29,7 @@ class UserViewSet(CreateViewSet):
                 'token': token
             }
             return Response(data=data, status=status.HTTP_200_OK)
-        raise serializers.ValidationError({
-            'password': 'Неверный пароль'
-        })
+        raise serializers.ValidationError({'password': 'Неверный пароль'})
 
 
 class TaskViewSet(viewsets.ModelViewSet):
@@ -47,11 +40,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)
 
-    @action(
-        detail=False,
-        methods=['get'],
-        url_path='my'
-    )
+    @action(detail=False, methods=['get'], url_path='my')
     def get_my_tasks(self, request):
         queryset = self.get_queryset().filter(author=request.user)
         page = self.paginate_queryset(queryset)

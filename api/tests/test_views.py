@@ -19,9 +19,7 @@ class AuthTests(APITestCase):
 
     def test_create_account(self):
         response = self.client.post(
-            self.create_user_url,
-            self.data,
-            format='json'
+            self.create_user_url, self.data, format='json'
         )
         self.assertEqual(response.status_code, status.HTTP_201_CREATED)
         self.assertEqual(User.objects.count(), 1)
@@ -146,7 +144,7 @@ class TasksTests(APITestCase):
     def test_get_tasks_my_list_retrieve(self):
         subtests_tuple = (
             (self.tasks_url, 'get all tasks list'),
-            (f'{self.tasks_url}my/', 'get my tasks list'),
+            (self.my_tasks_url, 'get my tasks list'),
         )
         for address, subtest_description in subtests_tuple:
             with self.subTest(subtest_description):
@@ -162,7 +160,7 @@ class TasksTests(APITestCase):
         response = self.authorized_client.get(self.tasks_url)
         json = response.json()
         task_1 = json.get('results')[1]
-        response = self.authorized_client.get(f'{self.my_tasks_url}')
+        response = self.authorized_client.get(self.my_tasks_url)
         json = response.json()
         task_2 = json.get('results')[0]
         response = self.authorized_client.get(
@@ -183,10 +181,7 @@ class TasksTests(APITestCase):
                 self.assertEqual(task['description'], self.task_1.description)
                 self.assertEqual(task['finished'], self.task_1.finished)
                 self.assertEqual(task['file'], self.task_1.file)
-                self.assertEqual(
-                    task['performers'],
-                    [self.user_2.username]
-                )
+                self.assertEqual(task['performers'], [self.user_2.username])
 
     def test_post_task(self):
         task_count = Task.objects.count()
